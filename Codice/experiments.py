@@ -240,20 +240,49 @@ def compare_agents(configurations: list[list[int]], n_games: int = 200) -> list[
         print(f"  Configurazione pile: {piles}  (Nim-sum iniziale: {_nim_sum(piles)})")
         print(f"{'='*60}")
 
+        # Calcola automaticamente il depth limit in base alla somma delle pile.
+        # Pile piccole (somma <= 6): esplorazione completa, albero gestibile.
+        # Pile medie (somma <= 15): depth limit 8, buon compromesso qualità/velocità.
+        # Pile grandi (somma > 15): depth limit 6, necessario per tempi accettabili.
+        # Senza questo limite, configurazioni come [3,5,7] (somma=15) o [4,5,6,7]
+        # generano alberi con milioni di nodi e il programma si blocca.
+        total = sum(piles)
+        if total <= 6:
+            depth = None          # esplorazione completa
+            depth_label = "completo"
+        elif total <= 15:
+            depth = 5
+            depth_label = "d=5"
+        else:
+            depth = 4
+            depth_label = "d=4"
+
         # Ricrea gli agenti freschi per ogni configurazione,
         # così i contatori (nodes_explored) ripartono da zero.
-        minimax    = MinimaxAgent(name="Minimax+AB",  max_player_id=0, use_alpha_beta=True)
-        minimax_no = MinimaxAgent(name="Minimax",     max_player_id=0, use_alpha_beta=False)
+        # Il nome include il depth limit per chiarezza nei risultati.
+        minimax    = MinimaxAgent(name=f"Minimax+AB ({depth_label})",  max_player_id=0, use_alpha_beta=True,  depth_limit=depth)
+        minimax_no = MinimaxAgent(name=f"Minimax ({depth_label})",     max_player_id=0, use_alpha_beta=False, depth_limit=depth)
         xor        = XORAgent(name="XOR")
         rnd        = RandomAgent(name="Random")
 
         # Lista delle coppie da sfidare.
-        pairs = [
-            (minimax, xor),
-            (minimax, rnd),
-            (xor, rnd),
-            (minimax, minimax_no),
-        ]
+        # Il confronto Minimax+AB vs Minimax (no AB) viene escluso
+        # per configurazioni con molte pile (somma > 15): quel torneo
+        # è computazionalmente molto oneroso e il risultato (sempre 50/50)
+        # è già illustrato sulla configurazione [1,2,3].
+        if total <= 15:
+            pairs = [
+                (minimax, xor),
+                (minimax, rnd),
+                (xor, rnd),
+                (minimax, minimax_no),
+            ]
+        else:
+            pairs = [
+                (minimax, xor),
+                (minimax, rnd),
+                (xor, rnd),
+            ]
 
         for a1, a2 in pairs:
             # Per gli agenti Minimax, assicura che max_player_id sia corretto:
