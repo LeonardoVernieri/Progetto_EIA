@@ -12,14 +12,32 @@ Questo progetto implementa tre agenti con approcci radicalmente diversi e ne mis
 ### Struttura del progetto
 ```text
 .
-├── nim.py            # Rappresentazione dello stato di gioco (NimState)
-├── agents.py         # Implementazione dei tre agenti
-├── experiments.py     # Motore dei tornei e raccolta statistiche
-├── main.py            # Entry point: partita interattiva, esperimenti, analisi nim-sum
+├── Codice/
+│   ├── nim.py            # Rappresentazione dello stato di gioco (NimState)
+│   ├── agents.py         # Implementazione dei tre agenti
+│   ├── experiments.py    # Motore dei tornei e raccolta statistiche
+│   ├── main.py           # Entry point: partita interattiva, esperimenti, analisi nim-sum
+│   └── .gitignore
+├── Documentazione/
+│   └── Tesina Progetto Elementi di Intelligenza Artificiale - Vernieri Leonardo.pdf   # Relazione completa del progetto
 └── README.md
 ```
+### Requisiti
+- Python $\geq$ 3.10
+- Nessuna dipendenza esterna (solo libreria standard)
 
 ### Installazione
 ```bash
-git clone
+git clone https://github.com/LeonardoVernieri/Progetto_EIA.git
+```
+
+### Utilizzo
+```bash
+cd Progetto_EIA.git
+```
+```bash
+cd Codice
+```
+```bash
+python main.py
 ```
